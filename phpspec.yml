@@ -1,0 +1,16 @@
+## YAML Template.
+suites:
+    core_suite:
+        namespace: Main
+        psr4_prefix: Main
+        src_path: %paths.config%/src
+code_generation: true
+bootstrap: index.php
+formatter.name: pretty
+#extensions:
+#    PhpSpecCodeCoverage\CodeCoverageExtension:
+#        format: html
+#        output:
+#            html: build/coverage
+#            clover: build/coverage.xml
+    

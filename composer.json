@@ -1,0 +1,32 @@
+{
+    "name": "bra/framework",
+    "description": "Ferramenta para dinamizar e padronizar a construção das Aplicações clientes das APIs",
+    "type": "library",
+    "require": {
+        "guzzlehttp/guzzle": "^6.1",
+        "twig/twig": "*"
+    },
+    "require-dev": {
+        "phpspec/phpspec": "*",
+        "phpunit/phpunit": "*"
+    },
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Rinzler",
+            "email": "feliphezion@gmail.com"
+        }
+    ],
+    "minimum-stability": "beta",
+    "autoload": 
+        {
+            "psr-4": 
+             {
+                 "Main\\": "",
+                 "App\\": "src/"
+             }
+    },
+    "config": {
+        "bin-dir": "bin/"
+    }
+}
