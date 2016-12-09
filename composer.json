@@ -7,7 +7,6 @@
         "twig/twig": "*"
     },
     "require-dev": {
-        "phpspec/phpspec": "*",
         "phpunit/phpunit": "*"
     },
     "license": "GPL",
@@ -19,12 +18,16 @@
     ],
     "minimum-stability": "beta",
     "autoload": 
+    {
+        "psr-4": 
         {
-            "psr-4": 
-             {
-                 "Main\\": "",
-                 "App\\": "src/"
-             }
+             "Main\\": "",
+             "App\\": "src/"
+        },
+        "psr-0": 
+        {
+            "": "src"
+        }
     },
     "config": {
         "bin-dir": "bin/"

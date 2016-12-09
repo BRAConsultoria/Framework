@@ -4,21 +4,23 @@ namespace Main\Core;
 
 use Main\Template\Render;
 
-class Controller {
-    
+class Controller extends ControllerAbstract
+{
+
+    private $URI;
     private $controller;
     private $action;
     private $params = [];
 
-    private $templateRender;
-
     public function __construct() 
     {
-        $this->templateRender   = new Render();
+        parent::__construct();
     }
 
-    public function run($URI) 
+    public function run() 
     {
+        $URI = $this->getURI();
+
         $this->setRequestEnvironment($URI);
 
         $controller = $this->getController();
@@ -41,7 +43,6 @@ class Controller {
             if($action === 'main'){
                 return $controllerClass
                         ->setRequestParams($this->getParams())
-                        ->setController($this)
                         ->main();
             }
             
@@ -56,7 +57,6 @@ class Controller {
 
             return $controllerClass
                     ->setRequestParams($this->getParams())
-                    ->setController($this)
                     ->{$action}();
 
         } catch (\RuntimeException $e) {
@@ -71,7 +71,7 @@ class Controller {
     
     public function main()
     {
-        return $this->templateRender->loader()->render('home.twig', []);
+        return $this->render->loader()->render('home.twig', []);
     }
     
     private function getControllerMethodAnnotationsRoute($controllerNS, $method = 'main') 
@@ -124,24 +124,18 @@ class Controller {
         }        
     }
 
-    public function jsonSucess($message = '')
+    public function getURI() 
     {
-        return $this->templateRender->loader()->render('json_encode.twig', [
-            "data" => [
-                'sucess' => 'true', 'message' => $message
-            ]
-        ]);
+        return $this->URI;
     }
 
-    public function jsonError($error)
+    public function setURI($URI) 
     {
-        return $this->templateRender->loader()->render('json_encode.twig', [
-            "data" => [
-                'sucess' => 'false', 'message' => $error
-            ]
-        ]);
+        $this->URI = $URI;
+        return $this;
     }
 
+        
     public function getController()
     {
         return $this->controller;

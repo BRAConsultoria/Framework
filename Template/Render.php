@@ -1,7 +1,7 @@
 <?php
 namespace Main\Template;
 
-class Render 
+class Render
 {
     private $loader;
 

@@ -10,6 +10,9 @@ use Main\Core\Controller;
 \define('CACHE_ROOT', \DIR_ROOT .'cache');
 \define('APP_ROOT', \DIR_ROOT .'src' . \DIRECTORY_SEPARATOR);
 
+//sem barra(/) no final
+\define('URL_BASE_API', 'http://localhost/BRA/Dashboard/API');
+
 \define('DEBUG_MODE', true);
 
 function sisError($errno, $errstr, $errfile, $errline)
@@ -41,8 +44,6 @@ function getErrorType($errno)
 \set_error_handler(__NAMESPACE__ . "\\sisError", \E_WARNING | \E_NOTICE);
 
 
-return (new Controller())->run(\filter_input(\INPUT_GET, 'q'));
-
-
+return (new Controller())->setURI(\filter_input(\INPUT_GET, 'q'));
 
 
