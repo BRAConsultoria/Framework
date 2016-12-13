@@ -14,12 +14,16 @@ class Render
     
     private $cache;
 
+    //receber array das configs
+    //ADICIONAR DEBUG
     public function __construct($cache = false) 
     {
         $this->setMainTemplatePath(\APP_ROOT . 'Template'. \DIRECTORY_SEPARATOR . 'views');
         $this->setCache($cache);
         $this->addPath($this->getMainTemplatePath());
     }
+    
+    //ADICIONAR SET CHARSET /Framework/twig.class
     
     public function render($template, $context) 
     {
