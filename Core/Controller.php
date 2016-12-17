@@ -2,8 +2,6 @@
 
 namespace Main\Core;
 
-use Main\Template\Render;
-
 class Controller extends ControllerAbstract
 {
 
@@ -12,7 +10,7 @@ class Controller extends ControllerAbstract
     private $action;
     private $params = [];
 
-    public function __construct() 
+    public function __construct()
     {
         parent::__construct();
     }
@@ -38,14 +36,19 @@ class Controller extends ControllerAbstract
                throw new \RuntimeException("Controller not found");
             }
 
+            $jwt = $this->getJwt();
+            $payload = $this->getPayload();
+
             $controllerClass = new $namespace();
 
             if($action === 'main'){
                 return $controllerClass
                         ->setRequestParams($this->getParams())
+                        ->setJwt($jwt)
+                        ->setPayload($payload)
                         ->main();
             }
-            
+
             if(\method_exists($controllerClass, $action) === false) {
                 throw new \RuntimeException("Controller Action not found");
             }
@@ -57,6 +60,8 @@ class Controller extends ControllerAbstract
 
             return $controllerClass
                     ->setRequestParams($this->getParams())
+                    ->setJwt($jwt)
+                    ->setPayload($payload)
                     ->{$action}();
 
         } catch (\RuntimeException $e) {
@@ -71,7 +76,7 @@ class Controller extends ControllerAbstract
     
     public function main()
     {
-        return $this->render->loader()->render('home.twig', []);
+        return $this->getTwig()->loader()->render('home.twig', []);
     }
     
     private function getControllerMethodAnnotationsRoute($controllerNS, $method = 'main') 
@@ -121,7 +126,27 @@ class Controller extends ControllerAbstract
                 $offset += 2;
             }
             $this->setParams($params);
-        }        
+        }
+    }
+    
+    public function getJwt()
+    {
+        $headers = \getallheaders();
+        if(isset($headers['Authorization'])){
+            return \sscanf($headers['Authorization'], 'Bearer %s');
+        } else {
+            return false;
+        }
+    }
+
+    public function getPayload()
+    {
+        $payload = \file_get_contents("php://input");
+        if(!empty($payload)){
+            return \json_decode($payload, true);
+        } else {
+            return [];
+        }
     }
 
     public function getURI() 

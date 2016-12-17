@@ -1,7 +1,7 @@
 <?php
 namespace Main\Template;
 
-class Render
+class Twig
 {
     private $loader;
 
@@ -12,21 +12,30 @@ class Render
     */
     private $paths = [];
     
-    private $cache;
+    private $conf;
+    
+    private $debug;
 
-    public function __construct($cache = false) 
+    public function __construct(array $conf = []) 
     {
+        $debug      = (isset($conf['debug']) ?: false);
+
         $this->setMainTemplatePath(\APP_ROOT . 'Template'. \DIRECTORY_SEPARATOR . 'views');
-        $this->setCache($cache);
+        $this->setConf($conf);
+        $this->setDebug($debug);
+
         $this->addPath($this->getMainTemplatePath());
     }
     
     public function render($template, $context) 
     {
-        $cache = ($this->getCache() === false ? [] : ['cache' => \CACHE_ROOT . \DIRECTORY_SEPARATOR . 'cache']);
-        $twig = new \Twig_Environment($this->getLoader(), $cache);
-        
-        return $twig->render($template, $context);
+        $twig = new \Twig_Environment($this->getLoader(), $this->getConf());
+
+        if($this->getDebug() === false){
+            return $twig->render($template, $context);
+        } else {
+            return $twig->render('json_encode.twig', ['data' => $context]);
+        }
     }
     
     public function loader($paths = []) 
@@ -65,17 +74,6 @@ class Render
     {
         return $this->paths;
     }
-    
-    private function getCache() 
-    {
-        return $this->cache;
-    }
-
-    private function setCache($cache) 
-    {
-        $this->cache = $cache;
-        return $this;
-    }
 
     private function getMainTemplatePath() 
     {
@@ -85,6 +83,28 @@ class Render
     private function setMainTemplatePath($mainTemplatePath) 
     {
         $this->mainTemplatePath = $mainTemplatePath;
+        return $this;
+    }
+    
+    public function getDebug() 
+    {
+        return $this->debug;
+    }
+
+    public function setDebug($debug) 
+    {
+        $this->debug = $debug;
+        return $this;
+    }
+
+    public function getConf()
+    {
+        return $this->conf;
+    }
+
+    public function setConf(array $conf) 
+    {
+        $this->conf = $conf;
         return $this;
     }
 }
