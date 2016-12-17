@@ -24,22 +24,22 @@ abstract class ControllerAbstract implements ControllerInterface
     /**
      * @var Twig 
      */
-    protected $twig;
+    private $twig;
 
     /**
      * @var Request
      */
-    protected $API;
+    private $API;
 
     public function __construct()
     {
-        $this->twig = (new Twig(['debug' => \filter_input(\INPUT_GET, 'debug')]))->loader();
+        $this->twig = NULL;
         $this->API = NULL;
     }
 
     public function jsonSuccess($message = '')
     {
-        return $this->twig->loader()->render('json_encode.twig', [
+        return $this->getTwig()->loader()->render('json_encode.twig', [
             "data" => [
                 'sucess' => 'true', 
                 'message' => $message
@@ -49,7 +49,7 @@ abstract class ControllerAbstract implements ControllerInterface
 
     public function jsonError($error)
     {
-        return $this->twig->loader()->render('json_encode.twig', [
+        return $this->getTwig()->loader()->render('json_encode.twig', [
             "data" => [
                 'sucess' => 'false', 
                 'message' => $error
@@ -100,10 +100,40 @@ abstract class ControllerAbstract implements ControllerInterface
     }
 
     /**
+     * Retorna uma instância da classe de abstração do Twig, seguindo
+     * a seguinte regra: se alguma config foi informada em $conf, então uma nova 
+     * instância de Twig é retornada, caso contrário a instância já configurada
+     *  em self::__construct() é retornada
+     * 
+     * @param array $conf Array de configurações para a criação da instância do Client
+     * @return Request Objeto da interface de acesso à API
+     */
+    public function getTwig(array $conf = []) 
+    {
+        $conf['debug'] = \filter_input(\INPUT_GET, 'debug');
+        if(\count($conf) > 1) {
+            $this->setTwig((new Twig($conf))->loader());
+        } else {
+            if(\is_null($this->twig) === true){
+                $this->setTwig((new Twig($conf))->loader());
+            }
+        }
+        return $this->twig;
+    }
+    /**
+     * @return $this
+     */
+    public function setTwig(Twig $twig) 
+    {
+        $this->twig = $twig;
+        return $this;
+    }
+
+    /**
      * Retorna uma instância da classe de abstração do GuzzleHttp\Client, seguindo
      * a seguinte regra: se alguma config foi informada em $conf, então uma nova 
-     * instância é de Request retornada, caso contrário a instância já configurada
-     *  no __construct() é retornada
+     * instância de Request é retornada, caso contrário a instância já configurada
+     *  no self::__construct() é retornada
      * 
      * @param array $conf Array de configurações para a criação da instância do Client
      * @return Request Objeto da interface de acesso à API

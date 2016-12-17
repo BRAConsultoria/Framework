@@ -128,18 +128,16 @@ class Request
                 'Authorization' => "Bearer ". $jwt
             ];
         }
-        
+
         //Verifica os headers setados e os adiciona à configuração
         if(\is_array($headers)){
             foreach($headers as $key => $val){
                 if(isset($headers[$key]) === true){
-                    $conf['headers'] = [
-                        $key => $val
-                    ];
+                    $conf['headers'][$key] =  $val;
                 }
             }
         }
-        
+
         //Verifica se um pyalod foi informado e se a requisição é do tipo que 
         //possui body(POST, PUT, DELETE), se for o caso, codifica em JSON e
         //adiciona o payload à configuração.

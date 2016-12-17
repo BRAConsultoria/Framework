@@ -76,7 +76,7 @@ class Controller extends ControllerAbstract
     
     public function main()
     {
-        return $this->twig->loader()->render('home.twig', []);
+        return $this->getTwig()->loader()->render('home.twig', []);
     }
     
     private function getControllerMethodAnnotationsRoute($controllerNS, $method = 'main') 
