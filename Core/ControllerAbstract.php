@@ -1,8 +1,8 @@
 <?php
 
 namespace Main\Core;
-use Main\Template\Render;
-use Main\API\Client;
+use Main\Template\Twig;
+use Main\API\Request;
 
 abstract class ControllerAbstract implements ControllerInterface
 {
@@ -22,24 +22,24 @@ abstract class ControllerAbstract implements ControllerInterface
    private $jwt;
    
     /**
-     * @var Render 
+     * @var Twig 
      */
-    protected $render;
+    protected $twig;
 
     /**
-     * @var Client
+     * @var Request
      */
     protected $API;
 
     public function __construct()
     {
-        $this->render = new Render();
+        $this->twig = (new Twig(['debug' => \filter_input(\INPUT_GET, 'debug')]))->loader();
         $this->API = NULL;
     }
 
     public function jsonSuccess($message = '')
     {
-        return $this->render->loader()->render('json_encode.twig', [
+        return $this->twig->loader()->render('json_encode.twig', [
             "data" => [
                 'sucess' => 'true', 
                 'message' => $message
@@ -49,7 +49,7 @@ abstract class ControllerAbstract implements ControllerInterface
 
     public function jsonError($error)
     {
-        return $this->render->loader()->render('json_encode.twig', [
+        return $this->twig->loader()->render('json_encode.twig', [
             "data" => [
                 'sucess' => 'false', 
                 'message' => $error
@@ -100,15 +100,21 @@ abstract class ControllerAbstract implements ControllerInterface
     }
 
     /**
-     * @return Client Objeto da interface de acesso à API
+     * Retorna uma instância da classe de abstração do GuzzleHttp\Client, seguindo
+     * a seguinte regra: se alguma config foi informada em $conf, então uma nova 
+     * instância é de Request retornada, caso contrário a instância já configurada
+     *  no __construct() é retornada
+     * 
+     * @param array $conf Array de configurações para a criação da instância do Client
+     * @return Request Objeto da interface de acesso à API
      */
-    public function getAPI(array $conf) 
+    public function getAPI(array $conf = []) 
     {
         if(\count($conf) > 0) {
-            $this->setAPI(new Client($conf));
+            $this->setAPI(new Request($conf));
         } else {
             if(\is_null($this->API) === true){
-                $this->setAPI(new Client([]));
+                $this->setAPI(new Request([]));
             }
         }
         return $this->API;
@@ -117,7 +123,7 @@ abstract class ControllerAbstract implements ControllerInterface
     /**
      * @return $this
      */
-    public function setAPI(Client $API) 
+    public function setAPI(Request $API) 
     {
         $this->API = $API;
         return $this;
