@@ -31,5 +31,9 @@
     },
     "config": {
         "bin-dir": "bin/"
+    },
+    "scripts": {
+        "post-install-cmd": "php manage.php install",
+        "post-update-cmd": "php manage.php install"
     }
 }
