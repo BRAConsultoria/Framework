@@ -13,10 +13,12 @@ $dirs = [
     $paths['template']
 ];
 
+$templates = getTemplates();
+
 if (\count($argv) > 1) {
     switch ($argv[1]) {
         case 'create':
-            run($paths, $dirs);
+            create($argv[2], $templates, $paths, $dirs);
             break;
         case 'install':
             build($paths, $dirs);
@@ -28,7 +30,41 @@ if (\count($argv) > 1) {
 } else {
     exit($help);
 }
+function create($controller, $templates, $paths, $dirs)
+{
+    if(empty($controller)){
+        exit("Controller must have at least one character!");
+    }
+    
+    if(isBuilt($paths, $dirs) === true){
 
+        $controllerName = \ucfirst(\strtolower($controller));
+        $controllerDir = $paths['src'] . \DIRECTORY_SEPARATOR . $controllerName;
+
+        if(\is_dir($controllerDir) === true){
+            exit("Controller name already taken.");
+        }
+
+        $controllerNameSpace = $controllerName;
+        $className = $controllerName;
+        $classNameSpance = $className;
+        
+        $controllerUser = \sprintf($templates['controller'], $controllerNameSpace, $controllerName, $className, $controllerName);
+        $classUser = \sprintf($templates['class'], $classNameSpance, $className);
+
+
+        $dir = \mkdir($controllerDir);
+        if($dir === true){
+            \file_put_contents($controllerDir . \DIRECTORY_SEPARATOR . $controllerName .'Controller.php', $controllerUser);
+            \file_put_contents($controllerDir . \DIRECTORY_SEPARATOR . $className .'Class.php', $classUser);
+            print("Controller succesfuly created at $controllerDir");
+        } else {
+            exit("Fail: controller's folder could not be created!");
+        }
+    } else {
+        exit("App not built yet! run php manage.php install first.");
+    }
+}
 function build(array $paths, array $dirs) 
 {
     $home       = $paths['home'];
@@ -40,9 +76,15 @@ function build(array $paths, array $dirs)
         }
     }
 
+    //criando a view home, que responde pela rota /
+    \file_put_contents($paths['template'] . 'home.twig', "<h1>OnyxERP Framework HTTP/1.1 200 OK</h1>");
+
+    //criando a view utilizada para retornar um json com uma mensagem de erro.
+    \file_put_contents($paths['template'] . 'json_encode.twig', "{{ data|json_encode()|raw }}");
+
     \chdir($home);
 
-    if (\is_dir($home . 'vendor') === false) {
+    if (\is_dir($home . \DIRECTORY_SEPARATOR .'vendor') === false) {
         print "> composer install ...\n";
         \exec("composer install", $stdout);
         print outputExec($stdout);
@@ -64,7 +106,7 @@ function isBuilt(array $paths, array $dirs)
         }
     }
 
-    if (\is_dir($home . 'vendor') === true and $directories === true) {
+    if (\is_dir($home . \DIRECTORY_SEPARATOR .'vendor') === true and $directories === true) {
         return true;
     } else {
         return false;
@@ -78,4 +120,81 @@ function outputExec(array $stdout)
         $output .= $line . "\n";
     }
     return $output;
+}
+
+function getTemplates(){
+$controllerTemplate = <<<EOF
+<?php
+
+namespace App\%s;
+
+use Main\Core\ControllerAbstract;
+use Main\Core\ControllerInterface;
+
+class %sController extends ControllerAbstract implements ControllerInterface
+{
+    private \$class;
+    private \$twig;
+
+    public function __construct()
+    {
+        parent::__construct();
+        \$this->class = new %sClass(\$this->getAPI(['base_uri' => "http://api.auth.alpha.onyxapp.com.br/v1/"]));
+
+        //configurações do módulo para o twig vão aqui, como cache por exemplo
+        \$this->twig = parent::getTwig();
+    }
+
+    /**
+    * @route("GET")
+    */
+    public function main()
+    {
+        \$this->class->setJwt(parent::getJwt());
+        //\$exemplo = \$this->class->getExemplo();
+        return parent::jsonSuccess("Controller %s running OK");
+    }
+}
+EOF;
+
+$classTemplate = <<<EOF
+<?php
+
+namespace App\%s;
+use \Main\API\Request;
+use Main\Core\ServiceAbstract;
+use Main\Core\ServiceInterface;
+
+class %sClass extends ServiceAbstract implements ServiceInterface
+{
+
+    public function __construct(Request \$API)
+    {
+        parent::__construct(\$API);
+    }
+    
+    /**
+     * Implementação de exemplo de requisição através da interface de abstração do GuzzleHttp para acesso às APIs do OnyxERP
+     */
+    public function getExamplo()
+    {
+        \$request = \$this->getAPI()
+                ->setJwt(parent::getJwt())
+                ->setHeader('Content-type', 'application/json');
+        
+        \$result = \$request->get('auth/');
+
+        if(\$result->getStatusCode() !== 200){
+            throw new \Exception("Falha ao obeter exemplo.");
+        }
+
+        return \$result->getDecoded();
+    }
+}
+EOF;
+
+return [
+    'controller'    => $controllerTemplate,
+    'class'         => $classTemplate
+];
 }

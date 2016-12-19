@@ -133,7 +133,7 @@ class Controller extends ControllerAbstract
     {
         $headers = \getallheaders();
         if(isset($headers['Authorization'])){
-            return \sscanf($headers['Authorization'], 'Bearer %s');
+            return \preg_replace('/[Bearer\s]{7}/', '', $headers['Authorization']);
         } else {
             return false;
         }
