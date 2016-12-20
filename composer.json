@@ -1,0 +1,39 @@
+{
+    "name": "onyxerp/framework",
+    "description": "Ferramenta para dinamizar e padronizar a construção das Aplicações clientes das APIs",
+    "type": "library",
+    "require": {
+        "php": "^5.6.21 || ^7.0",
+        "guzzlehttp/guzzle": "^6.1",
+        "twig/twig": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    },
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Rinzler",
+            "email": "feliphezion@gmail.com"
+        }
+    ],
+    "minimum-stability": "beta",
+    "autoload": 
+    {
+        "psr-4": 
+        {
+            "Framework\\": ""
+        },
+        "psr-0": 
+        {
+            "": "src"
+        }
+    },
+    "config": {
+        "bin-dir": "bin/"
+    },
+    "scripts": {
+        "post-install-cmd": "php manage.php install",
+        "post-update-cmd": "php manage.php install"
+    }
+}
