@@ -28,6 +28,9 @@
     "config": {
         "bin-dir": "bin/"
     },
+    "bin": [
+        "manage.php"
+    ],
     "scripts": {
         "post-install-cmd": "php manage.php install"
     }
