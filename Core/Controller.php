@@ -1,6 +1,6 @@
 <?php
 
-namespace Main\Core;
+namespace Framework\Core;
 
 class Controller extends ControllerAbstract
 {
@@ -9,6 +9,8 @@ class Controller extends ControllerAbstract
     private $controller;
     private $action;
     private $params = [];
+    private $headers;
+    private $payload;
 
     public function __construct()
     {
@@ -131,7 +133,7 @@ class Controller extends ControllerAbstract
     
     public function getJwt()
     {
-        $headers = \getallheaders();
+        $headers = $this->getHeaders();
         if(isset($headers['Authorization'])){
             return \preg_replace('/[Bearer\s]{7}/', '', $headers['Authorization']);
         } else {
@@ -139,14 +141,24 @@ class Controller extends ControllerAbstract
         }
     }
 
+    /**
+     * @return array Payload da requisição
+     */
     public function getPayload()
     {
-        $payload = \file_get_contents("php://input");
-        if(!empty($payload)){
-            return \json_decode($payload, true);
+        if(empty(parent::getPayload())){
+            $payload = \file_get_contents("php://input");
+            if(!empty($payload)){
+                return \json_decode($payload, true);
+            }
         } else {
-            return [];
+            $payload = parent::getPayload();
+            if(\is_array($payload) === true){
+                return $payload;
+            }
         }
+
+        return [];
     }
 
     public function getURI() 
@@ -160,7 +172,6 @@ class Controller extends ControllerAbstract
         return $this;
     }
 
-        
     public function getController()
     {
         return $this->controller;
@@ -191,6 +202,17 @@ class Controller extends ControllerAbstract
     private function setParams(array $params) 
     {
         $this->params = $params;
+        return $this;
+    }
+    
+    public function getHeaders() 
+    {
+        return $this->headers;
+    }
+
+    public function setHeaders($headers)
+    {
+        $this->headers = $headers;
         return $this;
     }
 }

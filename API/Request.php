@@ -1,8 +1,8 @@
 <?php
 
-namespace Main\API;
+namespace Framework\API;
 use GuzzleHttp\Client;
-use Main\API\Response;
+use Framework\API\Response;
 
 class Request
 {

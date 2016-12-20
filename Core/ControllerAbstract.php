@@ -1,8 +1,8 @@
 <?php
 
-namespace Main\Core;
-use Main\Template\Twig;
-use Main\API\Request;
+namespace Framework\Core;
+use Framework\Template\Twig;
+use Framework\API\Request;
 
 abstract class ControllerAbstract implements ControllerInterface
 {
