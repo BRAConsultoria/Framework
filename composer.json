@@ -32,8 +32,8 @@
         "manage.php"
     ],
     "scripts": {
-        "post-install-cmd": [
-            "php -f manage.php install"
+        "post-autoload-dump": [
+            "php manage.php install"
         ]
     }
 }
