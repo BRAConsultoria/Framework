@@ -1,6 +1,6 @@
 <?php
-namespace Main\Core;
-use \Main\API\Request;
+namespace Framework\Core;
+use Framework\API\Request;
 
 interface ServiceInterface
 {

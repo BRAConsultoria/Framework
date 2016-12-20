@@ -1,5 +1,5 @@
 <?php
-namespace Main\Core;
+namespace Framework\Core;
 
 interface ControllerInterface
 {
