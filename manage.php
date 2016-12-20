@@ -2,11 +2,14 @@
 
 $help = "type manage.php install|create <controller_name>";
 
+$composerRoot = \realpath(__DIR__ . '../../../../');
+
 $paths = [
-    'home'      => \realpath(__DIR__ . '/'),
-    'src'       => __DIR__ . \DIRECTORY_SEPARATOR .'src'. \DIRECTORY_SEPARATOR,
-    'template'  => __DIR__ . \DIRECTORY_SEPARATOR. 'src'. \DIRECTORY_SEPARATOR .'Template'. \DIRECTORY_SEPARATOR .'views' .\DIRECTORY_SEPARATOR
+    'home'      => $composerRoot,
+    'src'       => $composerRoot . \DIRECTORY_SEPARATOR .'src'. \DIRECTORY_SEPARATOR,
+    'template'  => $composerRoot . \DIRECTORY_SEPARATOR. 'src'. \DIRECTORY_SEPARATOR .'Template'. \DIRECTORY_SEPARATOR .'views' .\DIRECTORY_SEPARATOR
 ];
+
 
 $dirs = [
     $paths['src'],
@@ -84,11 +87,6 @@ function build(array $paths, array $dirs)
 
     \chdir($home);
 
-    if (\is_dir($home . \DIRECTORY_SEPARATOR .'vendor') === false) {
-        print "> composer install ...\n";
-        \exec("composer install", $stdout);
-        print outputExec($stdout);
-    }
     print("\n App succesfully built! have run! :)\n");
     exit(0);
 }
@@ -106,7 +104,7 @@ function isBuilt(array $paths, array $dirs)
         }
     }
 
-    if (\is_dir($home . \DIRECTORY_SEPARATOR .'vendor') === true and $directories === true) {
+    if ($directories === true) {
         return true;
     } else {
         return false;
@@ -128,8 +126,8 @@ $controllerTemplate = <<<EOF
 
 namespace App\%s;
 
-use Main\Core\ControllerAbstract;
-use Main\Core\ControllerInterface;
+use Framework\Core\ControllerAbstract;
+use Framework\Core\ControllerInterface;
 
 class %sController extends ControllerAbstract implements ControllerInterface
 {
@@ -161,9 +159,9 @@ $classTemplate = <<<EOF
 <?php
 
 namespace App\%s;
-use \Main\API\Request;
-use Main\Core\ServiceAbstract;
-use Main\Core\ServiceInterface;
+use Framework\API\Request;
+use Framework\Core\ServiceAbstract;
+use Framework\Core\ServiceInterface;
 
 class %sClass extends ServiceAbstract implements ServiceInterface
 {
