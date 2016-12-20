@@ -32,6 +32,8 @@
         "manage.php"
     ],
     "scripts": {
-        "post-install-cmd": "php manage.php install"
+        "post-install-cmd": [
+            "php manage.php install"
+        ]
     }
 }
