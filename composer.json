@@ -1,14 +1,11 @@
 {
-    "name": "onyxerp/framework",
+    "name": "braconsultoria/framework",
     "description": "Ferramenta para dinamizar e padronizar a construção das Aplicações clientes das APIs",
     "type": "library",
     "require": {
         "php": "^5.6.21 || ^7.0",
         "guzzlehttp/guzzle": "^6.1",
         "twig/twig": "*"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "*"
     },
     "license": "GPL",
     "authors": [
@@ -22,18 +19,12 @@
     {
         "psr-4": 
         {
-            "Framework\\": ""
-        },
-        "psr-0": 
-        {
-            "": "src"
+            "Framework\\": "src/"
         }
     },
     "config": {
         "bin-dir": "bin/"
     },
     "scripts": {
-        "post-install-cmd": "php manage.php install",
-        "post-update-cmd": "php manage.php install"
     }
 }
