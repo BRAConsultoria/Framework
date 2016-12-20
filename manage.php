@@ -68,6 +68,7 @@ function create($controller, $templates, $paths, $dirs)
             \file_put_contents($controllerDir . \DIRECTORY_SEPARATOR . $controllerName .'Controller.php', $controllerUser);
             \file_put_contents($controllerDir . \DIRECTORY_SEPARATOR . $className .'Class.php', $classUser);
             print("Controller succesfuly created at $controllerDir");
+            exit();
         } else {
             exit("Fail: controller's folder could not be created!");
         }
@@ -95,7 +96,7 @@ function build(array $paths, array $dirs)
     \chdir($home);
 
     print("\n App succesfully built! have run! :)\n");
-    exit(0);
+    exit();
 }
 
 function isBuilt(array $paths, array $dirs) 
