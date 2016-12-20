@@ -11,8 +11,6 @@ if($fileDir[0] === 'bin'){
     $composerRoot = \realpath(__DIR__ . '../../../../');
 }
 
-exit("root > ". $composerRoot );
-
 $paths = [
     'home'      => $composerRoot,
     'src'       => $composerRoot . \DIRECTORY_SEPARATOR .'src'. \DIRECTORY_SEPARATOR,
