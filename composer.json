@@ -29,6 +29,6 @@
         "bin-dir": "bin/"
     },
     "bin": [
-        "manage.php"
+        "manage"
     ]
 }
