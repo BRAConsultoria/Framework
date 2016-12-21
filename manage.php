@@ -17,7 +17,6 @@ $paths = [
     'template'  => $composerRoot . \DIRECTORY_SEPARATOR. 'src'. \DIRECTORY_SEPARATOR .'Template'. \DIRECTORY_SEPARATOR .'views' .\DIRECTORY_SEPARATOR
 ];
 
-
 $dirs = [
     $paths['src'],
     $paths['template']
@@ -27,6 +26,11 @@ $templates = getTemplates();
 
 if (\count($argv) > 1) {
     switch ($argv[1]) {
+        case 'run':
+            $phpExec    = (isset($argv[2]) ? $argv[2] : NULL);
+            $port       = (isset($argv[3]) ? $argv[3] : '8081');
+            run($paths, $dirs, $phpExec, $port);
+            break;
         case 'create':
             create($argv[2], $templates, $paths, $dirs);
             break;
@@ -40,6 +44,47 @@ if (\count($argv) > 1) {
 } else {
     exit($help);
 }
+
+function run($paths, $dirs, $phpExec, $port)
+{
+    $home = $paths['home'];
+    if (isBuilt($paths, $dirs) === true) {
+        \chdir($home);
+
+        $exec       = ((\is_null($phpExec) === false and \is_executable($phpExec) === true) ? $phpExec : 'php');
+        $www        = \realpath($home . "../");
+        $router     = \realpath(__DIR__ . \DIRECTORY_SEPARATOR . 'phpaccess.php' );
+        $validate   = validateExec($exec);
+
+        if($validate === false){
+            exit("Nao possivel iniciar o servidor de desenvolvimento.");
+        } else {
+            print "App running at http://localhost:$port/{App_PATH}\n"
+                    . "$validate Development Server started at ". \date("D M d H:i:s Y") ."\n"
+                    . "Document root is C:\\xampp\\htdocs\\\n"
+                    . "Press Ctrl-C to quit.\n";
+            \exec("$exec -S localhost:$port -t $www $router", $stdout, $status);
+            if($status > 0){
+                print outputExec($stdout);
+                exit("Problemas na execução no servidor de desenvolvimento.");
+            }
+        }
+    } else {
+        exit("\nApp not built yet. run manage.php build first!\n");
+    }
+}
+
+function validateExec($exec)
+{
+    \exec($exec .' --version', $stdout, $status);
+    if(isset($stdout[0]) and \preg_match('/^[PHP]{3}/', $stdout[0]) and $status === 0){
+        return $stdout[0];
+    } else {
+        print outputExec($stdout);
+        return false;
+    }
+}
+
 function create($controller, $templates, $paths, $dirs)
 {
     if(empty($controller)){
@@ -49,7 +94,8 @@ function create($controller, $templates, $paths, $dirs)
     if(isBuilt($paths, $dirs) === true){
 
         $controllerName = \ucfirst(\strtolower($controller));
-        $controllerDir = $paths['src'] . \DIRECTORY_SEPARATOR . $controllerName;
+        $controllerDir  = $paths['src'] . \DIRECTORY_SEPARATOR . $controllerName;
+        $viewDir        = $paths['template'] . \strtolower($controllerName);
 
         if(\is_dir($controllerDir) === true){
             exit("Controller name already taken.");
@@ -59,16 +105,23 @@ function create($controller, $templates, $paths, $dirs)
         $className = $controllerName;
         $classNameSpance = $className;
         
-        $controllerUser = \sprintf($templates['controller'], $controllerNameSpace, $controllerName, $className, $controllerName);
-        $classUser = \sprintf($templates['class'], $classNameSpance, $className);
+        $controllerUser = \sprintf($templates['controller'], $controllerNameSpace, $controllerName, $className, $controllerName, \strtolower($controllerName));
+        $classUser      = \sprintf($templates['class'], $classNameSpance, $className);
 
 
         $dir = \mkdir($controllerDir);
         if($dir === true){
             \file_put_contents($controllerDir . \DIRECTORY_SEPARATOR . $controllerName .'Controller.php', $controllerUser);
             \file_put_contents($controllerDir . \DIRECTORY_SEPARATOR . $className .'Class.php', $classUser);
-            print("Controller succesfuly created at $controllerDir");
-            exit();
+            
+            $createViewDir = (\is_dir($viewDir) === true ? false : \mkdir($viewDir));
+            if($createViewDir === true){
+                \file_put_contents($viewDir . \DIRECTORY_SEPARATOR . 'index.twig', '<h1>'. $controllerName .' home view</h1>');
+                print("Controller succesfuly created at $controllerDir");
+                exit();
+            } else {
+                exit("Fail: view's folder could not be created!");
+            }
         } else {
             exit("Fail: controller's folder could not be created!");
         }
@@ -158,7 +211,7 @@ class %sController extends ControllerAbstract implements ControllerInterface
     {
         \$this->class->setJwt(parent::getJwt());
         //\$exemplo = \$this->class->getExemplo();
-        return parent::jsonSuccess("Controller %s running OK");
+        return \$this->twig->render('%s/index.twig', []);
     }
 }
 EOF;

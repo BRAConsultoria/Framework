@@ -38,7 +38,7 @@ class Application
     public function run($q = NULL)
     {
         if(\is_null($q) === true){
-            $q = \filter_input(\INPUT_GET, 'q');
+            $q = (\filter_input(\INPUT_GET, 'q') ?: $_SERVER['REQUEST_URI']);
         }
 
         return (new Controller())->setPayload([])->setURI($q)->run();

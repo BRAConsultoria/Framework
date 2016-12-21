@@ -30,10 +30,5 @@
     },
     "bin": [
         "manage.php"
-    ],
-    "scripts": {
-        "post-autoload-dump": [
-            "php manage.php install"
-        ]
-    }
+    ]
 }
