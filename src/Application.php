@@ -32,16 +32,32 @@ class Application
     
     /**
      * @param string|null $q Query string para localizar o controller da requisição
-     * se null, será substituído por filter_input(INPUT_GET, 'q')
+     *  se null, será sobrescrito por filter_input(INPUT_GET, 'q')
+     * @param array|null $headers Headers da requisição HTTP em curso
+     *  se null, será sobrescrito por getallheaders()
+     * @param string|null $payload body em formato JSON, da requisição HTTP em curso
+     *  se null, será sobrescrito por file_get_contents("php://input")
      * @return Controller Objeto do controller com dados da requisição setados.
      */
-    public function run($q = NULL)
+    public function run($q = NULL, array $headers = NULL, $payload = null)
     {
         if(\is_null($q) === true){
             $q = (\filter_input(\INPUT_GET, 'q') ?: $_SERVER['REQUEST_URI']);
         }
 
-        return (new Controller())->setPayload([])->setURI($q)->run();
+        if(\is_null($headers) === true){
+            $headers = \getallheaders();
+        }
+
+        if(\is_null($payload) === true){
+            $payload = (\json_decode(\file_get_contents("php://input"), true) ?: []);
+        }
+
+        return (new Controller())
+                ->setHeaders($headers)
+                ->setPayload($payload)
+                ->setURI($q)
+                ->run();
     }
     
     private function getErrorType($errno)
