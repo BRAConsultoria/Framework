@@ -148,18 +148,19 @@ function build(array $paths, array $dirs, array $templates)
         \file_put_contents($paths['template'] . 'json_encode.twig', "{{ data|json_encode()|raw }}");
 
         if(\is_file($paths['home'] . 'index.php') === false){
+            print("Criando arquivo index.php\n");
             //criando o arquivo index(bootstrap) na raíz do projeto
             \file_put_contents($paths['home'] . \DIRECTORY_SEPARATOR . 'index.php', $templates['index']);
         }
 
         if(\is_file($paths['home'] . '.htaccess') === false){
+            print("Criando arquivo .htaccess\n");
             //criando o arquivo router(.htaccess) na raíz do projeto
             \file_put_contents($paths['home'] . \DIRECTORY_SEPARATOR . '.htaccess', $templates['htaccess']);
         }
 
         \chdir($home);
 
-        \exec('bin\\manage create Home');
         print("\n App succesfully built! have run! :)\n");
     } else {
         print("\n App already built! have run! :)\n");
