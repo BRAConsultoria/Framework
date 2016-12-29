@@ -149,12 +149,12 @@ function build(array $paths, array $dirs, array $templates)
 
         if(\is_file($paths['home'] . 'index.php') === false){
             //criando o arquivo index(bootstrap) na raíz do projeto
-            \file_put_contents($paths['home'] . 'index.php', $templates['index']);
+            \file_put_contents($paths['home'] . \DIRECTORY_SEPARATOR . 'index.php', $templates['index']);
         }
 
         if(\is_file($paths['home'] . '.htaccess') === false){
             //criando o arquivo router(.htaccess) na raíz do projeto
-            \file_put_contents($paths['home'] . '.htaccess', $templates['htaccess']);
+            \file_put_contents($paths['home'] . \DIRECTORY_SEPARATOR . '.htaccess', $templates['htaccess']);
         }
 
         \chdir($home);
