@@ -110,7 +110,12 @@ abstract class ControllerAbstract implements ControllerInterface
      */
     public function getTwig(array $conf = []) 
     {
-        $conf['debug'] = \filter_input(\INPUT_GET, 'debug');
+        $params = $this->getRequestParams();print_r($params);
+
+        if(isset($params['debug'])){
+            $conf['debug'] = true;
+        }
+
         if(\count($conf) > 1) {
             $this->setTwig((new Twig($conf))->loader());
         } else {

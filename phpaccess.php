@@ -16,7 +16,7 @@ if (\preg_match('/\.(?:png|jpg|jpeg|gif|txt)$/', $_SERVER["REQUEST_URI"])) {
     if(isset($exp[1])){
         $app    = $exp[1];
         $q      = \preg_replace('|\/'. $exp[1] .'\/|', '', $_SERVER["REQUEST_URI"]);
-        $_SERVER['REQUEST_URI'] = $q;
+        $_GET['q'] = $q;
         include $appRoot . \DIRECTORY_SEPARATOR .'index.php';
     } else {
         return false;
