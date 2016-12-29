@@ -42,7 +42,7 @@ class Application
     public function run($q = NULL, array $headers = NULL, $payload = null)
     {
         if(\is_null($q) === true){
-            $q = (\filter_input(\INPUT_GET, 'q') ?: $_SERVER['REQUEST_URI']);
+            $q = (\filter_input(\INPUT_GET, 'q') ?: (isset($_GET['q'])) ? $_GET['q'] : NULL);
         }
 
         if(\is_null($headers) === true){
