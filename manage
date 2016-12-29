@@ -161,6 +161,9 @@ function build(array $paths, array $dirs, array $templates)
 
         \chdir($home);
 
+        print("> Criando o HomeController");
+        \exec("bin\\manage create Home");
+        
         print("\n App succesfully built! have run! :)\n");
     } else {
         print("\n App already built! have run! :)\n");

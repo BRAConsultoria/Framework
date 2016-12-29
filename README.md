@@ -6,10 +6,7 @@ Utilizar o composer.json no gist de exemplo https://gist.github.com/feliphebueno
 
 Estrutura e arquivos necessários para iniciar a APP:
 
-![app_init](https://cloud.githubusercontent.com/assets/6662338/21399135/15986a5e-c789-11e6-96e9-80c5b9bf9c27.jpg)
-
-Modelo do arquivo inddex.php: https://gist.github.com/feliphebueno/8cc18ae3c07d646a92eca659f2bfc120
-Modelo do arquivo .htaccess: https://gist.github.com/feliphebueno/5afdcec2672337e8d42bd17519f372c6
+![app_init](https://cloud.githubusercontent.com/assets/6662338/21555777/f214e6e4-cdf9-11e6-8b6c-9770b47abfc3.jpg)
 
 ```PHP
 composer install
