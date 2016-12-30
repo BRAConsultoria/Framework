@@ -53,8 +53,24 @@ abstract class ServiceAbstract implements ServiceInterface
         return $this;
     }
     
-    public function getAPI() 
+    /**
+     * Retorna uma instância da classe de abstração do GuzzleHttp\Client, seguindo
+     * a seguinte regra: se alguma config foi informada em $conf, então uma nova 
+     * instância de Request é retornada, caso contrário a instância já configurada
+     *  no self::__construct() é retornada
+     * 
+     * @param array $conf Array de configurações para a criação da instância do Client
+     * @return Request Objeto da interface de acesso à API
+     */
+    public function getAPI(array $conf = []) 
     {
+        if(\count($conf) > 0) {
+            $this->setAPI(new Request($conf));
+        } else {
+            if(\is_null($this->API) === true){
+                $this->setAPI(new Request([]));
+            }
+        }
         return $this->API;
     }
 

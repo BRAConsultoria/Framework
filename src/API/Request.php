@@ -102,9 +102,11 @@ class Request
 
         if(isset($headers['Content-Type'][0]) and $headers['Content-Type'][0] == 'application/json'){
             try {
-                $response->setDecoded(\json_decode($content, true));
+                $json = \json_decode($content, true);
+                if(\json_last_error() == 0){
+                    $response->setDecoded($json);
+                }
             } catch (Exception $e) {
-                
             }
         }
 
