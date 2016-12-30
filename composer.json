@@ -3,7 +3,7 @@
     "description": "Ferramenta para dinamizar e padronizar a construção das Aplicações clientes das APIs",
     "type": "library",
     "require": {
-        "php": "^5.6.21 || ^7.0",
+        "php": "^5.6.* || ^7.0",
         "guzzlehttp/guzzle": "^6.1",
         "twig/twig": "1.29.0"
     },
