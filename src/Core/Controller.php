@@ -56,7 +56,7 @@ class Controller extends ControllerAbstract
             }
 
             $route = $this->getControllerMethodAnnotationsRoute($namespace, $action);
-            if(\filter_input(\INPUT_SERVER, 'REQUEST_METHOD') != $route){
+            if(\getenv('REQUEST_METHOD') != $route){
                 throw new \RuntimeException("Controller Action not found for requested route");
             }
 
