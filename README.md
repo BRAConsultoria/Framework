@@ -1,6 +1,8 @@
 # Framework
 Ferramenta para dinamizar e padronizar a construção das Aplicações clientes das APIs.
 
+[![Build Status](https://travis-ci.org/BRAConsultoria/Framework.svg?branch=master)](https://travis-ci.org/BRAConsultoria/Framework)
+
 # Instalação
 Utilizar o composer.json no gist de exemplo https://gist.github.com/feliphebueno/f1cedecd7e08d05e47e4a2af96f28144.
 
