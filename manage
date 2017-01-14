@@ -132,12 +132,13 @@ function create($controller, $templates, $paths, $dirs)
         exit("App not built yet! run php manage.php install first.");
     }
 }
+
 function build(array $paths, array $dirs, array $templates) 
 {
     $home       = $paths['home'];
 
     if(isBuilt($paths, $dirs) === false){
-        print "> verifying dirs ...\n";
+        print "> creating dirs ...\n";
         foreach ($dirs as $dir) {
             if (\is_dir($dir) === false) {
                 \exec("mkdir ". $dir);
@@ -147,6 +148,17 @@ function build(array $paths, array $dirs, array $templates)
         //criando a view utilizada para retornar um json com uma mensagem de erro.
         \file_put_contents($paths['template'] . 'json_encode.twig', "{{ data|json_encode()|raw }}");
 
+        if(\is_dir($paths['template'] . \DIRECTORY_SEPARATOR . 'form') === false){
+            
+            \mkdir($paths['template'] . \DIRECTORY_SEPARATOR . 'form');
+            
+            print("> Criando arquivo form.twig\n");
+            \file_put_contents($paths['template'] . \DIRECTORY_SEPARATOR . 'form' . \DIRECTORY_SEPARATOR . 'form.twig', $templates['viewForm']);
+            
+            print("> Criando arquivo fields.twig\n");
+            \file_put_contents($paths['template'] . \DIRECTORY_SEPARATOR . 'form' . \DIRECTORY_SEPARATOR . 'fields.twig', $templates['viewFileds']);
+        }
+        
         if(\is_file($paths['home'] . 'index.php') === false){
             print("> Criando arquivo index.php\n");
             //criando o arquivo index(bootstrap) na raíz do projeto
@@ -305,10 +317,26 @@ RewriteRule ^(.*/?)$ %{ENV:BASE}index.php?q=$1 [NC,L]
 
 EOF;
 
+$formTwigTemplate = <<<EOF
+{% form_theme form with ['bootstrap_3_horizontal_layout.html.twig','form/fields.twig'] %}
+{{ form_widget(form) }}
+
+EOF;
+
+$fieldsTwigTemplate = <<<EOF
+{% block form_label_class %}
+{% endblock form_label_class %}
+{% block form_group_class -%}
+{%- endblock form_group_class %}
+
+EOF;
+
     return [
         'controller'    => $controllerTemplate,
         'class'         => $classTemplate,
         'index'         => $indexTemplate,
         'htaccess'      => $htaccessTemplate,
+        'viewForm'      => $formTwigTemplate,
+        'viewFileds'    => $fieldsTwigTemplate,
     ];
 }
