@@ -1,6 +1,14 @@
 <?php
 namespace Framework\Template;
 
+use Symfony\Bridge\Twig\Form\TwigRendererEngine;
+use Symfony\Bridge\Twig\Extension\TranslationExtension;
+use Symfony\Bridge\Twig\Extension\FormExtension;
+use Symfony\Bridge\Twig\Form\TwigRenderer;
+use Symfony\Component\Translation\Loader\XliffFileLoader;
+use Symfony\Component\Security\Csrf\CsrfTokenManager;
+use Symfony\Component\Translation\Translator;
+
 class Twig
 {
     private $loader;
@@ -25,12 +33,19 @@ class Twig
         $this->setDebug($debug);
 
         $this->addPath($this->getMainTemplatePath());
+        $this->addPath(\VENDOR_TWIG_BRIDGE_DIR . '/Resources/views/Form');
     }
-    
+
     public function render($template, $context) 
     {
-        $twig = new \Twig_Environment($this->getLoader(), $this->getConf());
+        $twigEnv = new \Twig_Environment($this->getLoader(), $this->getConf());
 
+        if(isset($this->conf['forms']) === true){
+            $twig = $this->setFormExtensions($twigEnv);
+        } else {
+            $twig = $twigEnv;
+        }
+        
         if($this->getDebug() === false){
             return $twig->render($template, $context);
         } else {
@@ -52,6 +67,26 @@ class Twig
 
         $this->setLoader(new \Twig_Loader_Filesystem($this->getPaths()));
         return $this;
+    }
+    
+    private function setFormExtensions(\Twig_Environment $twig) 
+    {
+        $csrfTokenManager = new CsrfTokenManager();
+
+        $translator = new Translator('en');
+        $translator->addLoader('xlf', new XliffFileLoader());
+        $translator->addResource('xlf', \VENDOR_FORM_DIR . '/Resources/translations/validators.en.xlf', 'en', 'validators');
+        $translator->addResource('xlf', \VENDOR_VALIDATOR_DIR . '/Resources/translations/validators.en.xlf', 'en', 'validators');
+
+        $formEngine = new TwigRendererEngine([\DEFAULT_FORM_THEME]);
+        $formEngine->setEnvironment($twig);
+
+        $twig->addExtension(new TranslationExtension($translator));
+        $twig->addExtension(
+            new FormExtension(new TwigRenderer($formEngine, $csrfTokenManager))
+        );
+        
+        return $twig;
     }
     
     private function addPath($path) 
