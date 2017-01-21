@@ -37,24 +37,35 @@ abstract class ControllerAbstract implements ControllerInterface
         $this->API = NULL;
     }
 
-    public function jsonSuccess($message = '')
+    public function jsonSuccess($message = '', $status = 200)
     {
         return $this->getTwig()->loader()->render('json_encode.twig', [
             "data" => [
-                'sucess' => 'true', 
+                'success' => 'true', 
+                'status' => $status,
                 'message' => $message
             ]
         ]);
     }
 
-    public function jsonError($error)
+    public function jsonError($error, $status = 500)
     {
         return $this->getTwig()->loader()->render('json_encode.twig', [
             "data" => [
-                'sucess' => 'false', 
+                'success' => 'false',
+                'status' => $status,
                 'message' => $error
             ]
         ]);
+    }
+    
+    public function getRequestParam($key) 
+    {
+        if(isset($this->requestParams[$key]) === true){
+            return $this->requestParams[$key];
+        } else {
+            return NULL;
+        }
     }
     
     public function getRequestParams()
