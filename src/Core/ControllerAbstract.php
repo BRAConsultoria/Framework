@@ -43,7 +43,7 @@ abstract class ControllerAbstract implements ControllerInterface
             "data" => [
                 'success' => true, 
                 'status' => $status,
-                'message' => $message
+                'data' => $message
             ]
         ]);
     }
@@ -54,7 +54,7 @@ abstract class ControllerAbstract implements ControllerInterface
             "data" => [
                 'success' => false,
                 'status' => $status,
-                'message' => $error
+                'data' => $error
             ]
         ]);
     }
