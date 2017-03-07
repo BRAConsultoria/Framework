@@ -41,7 +41,7 @@ abstract class ControllerAbstract implements ControllerInterface
     {
         return $this->getTwig()->loader()->render('json_encode.twig', [
             "data" => [
-                'success' => 'true', 
+                'success' => true, 
                 'status' => $status,
                 'message' => $message
             ]
@@ -52,7 +52,7 @@ abstract class ControllerAbstract implements ControllerInterface
     {
         return $this->getTwig()->loader()->render('json_encode.twig', [
             "data" => [
-                'success' => 'false',
+                'success' => false,
                 'status' => $status,
                 'message' => $error
             ]
