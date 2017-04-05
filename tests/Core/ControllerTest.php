@@ -21,6 +21,11 @@ class ControllerTest extends \PHPUnit_Framework_TestCase
      * @var Application
      */
     protected $object;
+    
+    /**
+     * @var string
+     */
+    protected $appHome;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -28,7 +33,8 @@ class ControllerTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        require_once(realpath(__DIR__ .'..'. \DIRECTORY_SEPARATOR.'..'. \DIRECTORY_SEPARATOR .'..'. \DIRECTORY_SEPARATOR .'vendor' . \DIRECTORY_SEPARATOR .'autoload.php'));
+        $this->appHome = \realpath(__DIR__ .'..'. \DIRECTORY_SEPARATOR.'..'. \DIRECTORY_SEPARATOR .'..'. \DIRECTORY_SEPARATOR);
+        require_once($this->appHome . \DIRECTORY_SEPARATOR . 'vendor'. \DIRECTORY_SEPARATOR .'autoload.php');
     }
 
     /**
@@ -36,7 +42,7 @@ class ControllerTest extends \PHPUnit_Framework_TestCase
      */
     public function testConstructor()
     {
-        $app = new Application(['APP_ROOT' => \realpath(__DIR__ .'../../src/')]);
+        $app = new Application(['APP_ROOT' => $this->appHome .'/src/' ]);
         $this->oject = $app;
         $this->assertInstanceOf('Framework\Application', $app);
     }
