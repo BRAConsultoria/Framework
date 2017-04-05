@@ -33,7 +33,7 @@ class ControllerTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->appHome = \realpath(__DIR__ .'..'. \DIRECTORY_SEPARATOR.'..'. \DIRECTORY_SEPARATOR .'..'. \DIRECTORY_SEPARATOR);
+        $this->appHome = __DIR__ .'..'. \DIRECTORY_SEPARATOR.'..'. \DIRECTORY_SEPARATOR .'..'. \DIRECTORY_SEPARATOR;
         require_once($this->appHome . \DIRECTORY_SEPARATOR . 'vendor'. \DIRECTORY_SEPARATOR .'autoload.php');
     }
 
