@@ -23,16 +23,16 @@ class Controller extends ControllerAbstract
 
         $this->setRequestEnvironment($URI);
 
-        $controller = $this->getController();
+        $controllerName = $this->getController();
         $action = $this->getAction();
 
         try {
 
-            $namespace = \DEFAULT_NAMESPACE . '\\'. $controller . '\\'. $controller .'Controller';
-
-            if(empty($controller)){
-                return $this->main();
+            if(empty($controllerName)){
+                $controllerName = 'Home';
             }
+
+            $namespace = \DEFAULT_NAMESPACE . '\\'. $controllerName . '\\'. $controllerName .'Controller';
 
             if(\class_exists($namespace) === false){
                throw new \RuntimeException("Controller not found");
@@ -41,26 +41,26 @@ class Controller extends ControllerAbstract
             $jwt = $this->getJwt();
             $payload = $this->getPayload();
 
-            $controllerClass = new $namespace();
+            $controller = new $namespace();
 
             if($action === 'main'){
-                return $controllerClass
+                return $controller
                         ->setRequestParams($this->getParams())
                         ->setJwt($jwt)
                         ->setPayload($payload)
                         ->main();
             }
 
-            if(\method_exists($controllerClass, $action) === false) {
+            if(\method_exists($controller, $action) === false) {
                 throw new \RuntimeException("Controller Action not found");
             }
 
             $route = $this->getControllerMethodAnnotationsRoute($namespace, $action);
-            if(\filter_input(\INPUT_SERVER, 'REQUEST_METHOD') != $route){
+            if(\getenv('REQUEST_METHOD') != $route){
                 throw new \RuntimeException("Controller Action not found for requested route");
             }
 
-            return $controllerClass
+            return $controller
                     ->setRequestParams($this->getParams())
                     ->setJwt($jwt)
                     ->setPayload($payload)
@@ -70,7 +70,7 @@ class Controller extends ControllerAbstract
             return $this->jsonError($e->getMessage());
         } catch (\Exception $e) {
             if(\DEBUG_MODE === true){
-                $Error = "<pre>".$e->getTraceAsString()."</pre>";
+                $Error = "<pre>". $e->getTraceAsString() ."</pre>";
             }
             return $this->jsonError($e->getMessage() . $Error);
         }
@@ -78,7 +78,7 @@ class Controller extends ControllerAbstract
     
     public function main()
     {
-        return $this->getTwig()->loader()->render('home.twig', []);
+        return NULL;
     }
     
     private function getControllerMethodAnnotationsRoute($controllerNS, $method = 'main') 

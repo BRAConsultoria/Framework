@@ -100,12 +100,15 @@ class Request
                     ->setHeaders($headers)
                     ->setContent($content);
 
-        if(isset($headers['Content-Type'][0]) and $headers['Content-Type'][0] == 'application/json'){
-            try {
-                $response->setDecoded(\json_decode($content, true));
-            } catch (Exception $e) {
-                
+        try {
+            $json = \json_decode($content, true);
+            if(\json_last_error() == 0){
+                $response->setDecoded($json);
+            } else {
+                $response->setDecoded([]);
             }
+        } catch (Exception $e) {
+            $response->setDecoded([]);
         }
 
         return $response;

@@ -37,24 +37,35 @@ abstract class ControllerAbstract implements ControllerInterface
         $this->API = NULL;
     }
 
-    public function jsonSuccess($message = '')
+    public function jsonSuccess($message = '', $status = 200)
     {
         return $this->getTwig()->loader()->render('json_encode.twig', [
             "data" => [
-                'sucess' => 'true', 
-                'message' => $message
+                'success' => true, 
+                'status' => $status,
+                'data' => $message
             ]
         ]);
     }
 
-    public function jsonError($error)
+    public function jsonError($error, $status = 500)
     {
         return $this->getTwig()->loader()->render('json_encode.twig', [
             "data" => [
-                'sucess' => 'false', 
-                'message' => $error
+                'success' => false,
+                'status' => $status,
+                'data' => $error
             ]
         ]);
+    }
+    
+    public function getRequestParam($key) 
+    {
+        if(isset($this->requestParams[$key]) === true){
+            return $this->requestParams[$key];
+        } else {
+            return NULL;
+        }
     }
     
     public function getRequestParams()
@@ -110,7 +121,12 @@ abstract class ControllerAbstract implements ControllerInterface
      */
     public function getTwig(array $conf = []) 
     {
-        $conf['debug'] = \filter_input(\INPUT_GET, 'debug');
+        $params = $this->getRequestParams();
+
+        if(isset($params['debug'])){
+            $conf['debug'] = true;
+        }
+
         if(\count($conf) > 1) {
             $this->setTwig((new Twig($conf))->loader());
         } else {

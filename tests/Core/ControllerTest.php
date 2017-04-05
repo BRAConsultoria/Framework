@@ -2,7 +2,7 @@
 
 namespace Main;
 
-use Main\Core\Controller;
+use Framework\Application;
 
 /**
  * DashboardServiceTest.
@@ -18,9 +18,14 @@ class ControllerTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var Controller
+     * @var Application
      */
     protected $object;
+    
+    /**
+     * @var string
+     */
+    protected $appHome;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -28,24 +33,17 @@ class ControllerTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $app = require_once realpath('index.php');
-        $this->oject = new Controller();
+        $this->appHome = __DIR__ .'..'. \DIRECTORY_SEPARATOR.'..'. \DIRECTORY_SEPARATOR .'..'. \DIRECTORY_SEPARATOR;
+        require_once($this->appHome . \DIRECTORY_SEPARATOR . 'vendor'. \DIRECTORY_SEPARATOR .'autoload.php');
     }
 
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tearDown()
-    {
-        
-    }
     /**
      * @covers Main\Core\Controller::__construct
      */
     public function testConstructor()
     {
-        require_once realpath('index.php');
-        $this->assertInstanceOf('\Main\Core\Controller', new Controller());
+        $app = new Application(['APP_ROOT' => $this->appHome .'/src/' ]);
+        $this->oject = $app;
+        $this->assertInstanceOf('Framework\Application', $app);
     }
 }
